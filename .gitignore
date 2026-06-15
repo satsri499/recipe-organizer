@@ -1,0 +1,18 @@
+# IntelliJ files
+.idea/
+*.iml
+*.iws
+target/
+
+# Application properties with secrets
+src/main/resources/application.properties
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

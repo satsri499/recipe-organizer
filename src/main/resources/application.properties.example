@@ -1,0 +1,19 @@
+spring.application.name=demo
+
+# PostgreSQL connection
+spring.datasource.url=jdbc:postgresql://localhost:5432/recipedb
+spring.datasource.username=your_db_username
+spring.datasource.password=your_db_password
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA settings
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+
+# JWT
+jwt.secret=your_jwt_secret_here
+jwt.expiration=86400000
+
+# Anthropic API
+ANTHROPIC_API_KEY=your_api_key_here
