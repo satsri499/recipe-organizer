@@ -3,9 +3,11 @@ package com.example.demo.service;
 import com.example.demo.dto.RecipeRequest;
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
+import com.example.demo.dto.ExtractedRecipeData;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import java.util.List;
+
 
 @Service
 public class RecipeService {
@@ -161,5 +163,87 @@ public class RecipeService {
         }
 
         return savedRecipe;
+    }
+
+    @Transactional
+    public Recipe extractAndSave(ExtractedRecipeData data, Long userId,
+                                 String sourceType, String sourceUrl,
+                                 String imagePath) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Recipe recipe = new Recipe();
+        recipe.setUser(user);
+        recipe.setName(data.getName());
+        recipe.setDescription(data.getDescription());
+        recipe.setCuisine(data.getCuisine());
+        recipe.setCategory(data.getCategory());
+        recipe.setServings(data.getServings());
+        recipe.setSourceType(sourceType);
+        recipe.setSourceUrl(sourceUrl);
+        recipe.setImagePath(imagePath);  // ← save image path
+        recipe.setIsFavourite(false);
+        Recipe savedRecipe = recipeRepository.save(recipe);
+
+        // Save nutrition
+        Nutrition nutrition = new Nutrition();
+        nutrition.setRecipe(savedRecipe);
+        nutrition.setCalories(data.getCalories());
+        nutrition.setProteinG(data.getProteinG());
+        nutrition.setCarbsG(data.getCarbsG());
+        nutrition.setFatG(data.getFatG());
+        nutrition.setFiberG(data.getFiberG());
+        nutrition.setSugarG(data.getSugarG());
+        nutritionRepository.save(nutrition);
+
+        // Save ingredients
+        if (data.getIngredients() != null) {
+            for (ExtractedRecipeData.IngredientData ing : data.getIngredients()) {
+                Ingredient ingredient = new Ingredient();
+                ingredient.setRecipe(savedRecipe);
+                ingredient.setName(ing.getName());
+                ingredient.setQuantity(ing.getQuantity());
+                ingredient.setUnit(ing.getUnit());
+                ingredient.setOrderNum(ing.getOrderNum());
+                ingredientRepository.save(ingredient);
+            }
+        }
+
+        // Save cooking steps
+        if (data.getSteps() != null) {
+            for (ExtractedRecipeData.StepData step : data.getSteps()) {
+                CookingStep cookingStep = new CookingStep();
+                cookingStep.setRecipe(savedRecipe);
+                cookingStep.setStepNumber(step.getStepNumber());
+                cookingStep.setInstruction(step.getInstruction());
+                cookingStep.setDurationMins(step.getDurationMins());
+                cookingStepRepository.save(cookingStep);
+            }
+        }
+
+        // Save tags
+        if (data.getTags() != null) {
+            for (String tagName : data.getTags()) {
+                Tag tag = new Tag();
+                tag.setRecipe(savedRecipe);
+                tag.setName(tagName);
+                tagRepository.save(tag);
+            }
+        }
+
+        return savedRecipe;
+    }
+    public Recipe getRecipeWithDetails(Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RuntimeException("Recipe not found"));
+
+        // Force load related data
+        recipe.getIngredients().size();
+        recipe.getCookingSteps().size();
+        recipe.getTags().size();
+        if (recipe.getNutrition() != null) {
+            recipe.getNutrition().getCalories();
+        }
+        return recipe;
     }
 }

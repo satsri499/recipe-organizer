@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name = "users")  // "user" is a reserved word in PostgreSQL — always use "users"
@@ -27,6 +29,7 @@ public class User {
     @Email(message = "Email format is invalid")
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     @NotBlank(message = "Password is required")
     private String password;
@@ -37,6 +40,7 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Recipe> recipes;
 

@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/register").permitAll()
                         .requestMatchers("/api/users/login").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/uploads/images/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/recipes").permitAll() // ← add this temporarily
 
                         // Everything else requires a valid token
