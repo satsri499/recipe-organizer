@@ -103,7 +103,7 @@ public class RecipeExtractionService {
         Message response = anthropicClient.messages().create(
                 MessageCreateParams.builder()
                         .model("claude-haiku-4-5")
-                        .maxTokens(2000L)
+                        .maxTokens(4000L)
                         .addUserMessage(prompt)
                         .build()
         );
@@ -209,7 +209,7 @@ public class RecipeExtractionService {
         Message response = anthropicClient.messages().create(
                 MessageCreateParams.builder()
                         .model("claude-haiku-4-5")
-                        .maxTokens(2000L)
+                        .maxTokens(4000L)
                         .addUserMessage(prompt)
                         .build()
         );

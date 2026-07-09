@@ -21,6 +21,10 @@ public class RecipeRequest {
     private List<CookingStepRequest> cookingSteps;
     private List<TagRequest> tags;
 
+    private String imageBase64;     // new — Base64 image data
+    private String imageMediaType;  // new — e.g. "image/jpeg"
+
+
     // Getters and Setters
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -52,6 +56,12 @@ public class RecipeRequest {
     public void setCookingSteps(List<CookingStepRequest> cookingSteps) { this.cookingSteps = cookingSteps; }
     public List<TagRequest> getTags() { return tags; }
     public void setTags(List<TagRequest> tags) { this.tags = tags; }
+
+    public String getImageBase64() { return imageBase64; }
+    public void setImageBase64(String imageBase64) { this.imageBase64 = imageBase64; }
+
+    public String getImageMediaType() { return imageMediaType; }
+    public void setImageMediaType(String imageMediaType) { this.imageMediaType = imageMediaType; }
 
     // Nested DTOs
     public static class NutritionRequest {

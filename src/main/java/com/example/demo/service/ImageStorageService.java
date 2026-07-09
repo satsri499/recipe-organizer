@@ -50,4 +50,22 @@ public class ImageStorageService {
             System.out.println("Could not delete image: " + imagePath);
         }
     }
+    // Save image from Base64 string — used when user confirms save
+    public String saveImageFromBase64(String base64Data, String mediaType) throws IOException {
+        Path uploadPath = Paths.get(uploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        String extension = mediaType != null && mediaType.contains("png") ? ".png" : ".jpg";
+        String uniqueFilename = UUID.randomUUID().toString() + extension;
+
+        byte[] imageBytes = java.util.Base64.getDecoder().decode(base64Data);
+        Path filePath = uploadPath.resolve(uniqueFilename);
+        Files.write(filePath, imageBytes);
+
+        System.out.println("Image saved on final save: " + filePath.toAbsolutePath());
+
+        return uploadDir + "/" + uniqueFilename;
+    }
 }

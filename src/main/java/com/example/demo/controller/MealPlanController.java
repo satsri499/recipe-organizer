@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.MealPlan;
 import com.example.demo.service.MealPlanService;
+import com.example.demo.dto.MealPlanResponse;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +21,19 @@ public class MealPlanController {
 
     // GET /api/mealplan/day?userId=1&date=2026-06-09
     @GetMapping("/day")
-    public ResponseEntity<List<MealPlan>> getDayPlan(
+    public ResponseEntity<List<MealPlanResponse>> getDayPlan(
             @RequestParam Long userId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(mealPlanService.getDayPlan(userId, date));
+
+        List<MealPlan> plans = mealPlanService.getDayPlan(userId, date);
+
+        // Convert each MealPlan to MealPlanResponse DTO
+        // This includes the recipe name and nutrition
+        List<MealPlanResponse> responses = plans.stream()
+                .map(MealPlanResponse::from)
+                .collect(java.util.stream.Collectors.toList());
+
+        return ResponseEntity.ok(responses);
     }
 
     // GET /api/mealplan/week?userId=1&weekStart=2026-06-09
