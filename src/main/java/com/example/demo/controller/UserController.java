@@ -9,6 +9,8 @@ import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+
 
 import java.util.List;
 
@@ -68,5 +70,28 @@ public class UserController {
                 token, user.getId(), user.getName(), user.getEmail());
 
         return ResponseEntity.ok(response);
+    }
+
+    // POST /api/users/reset-password
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            String newPassword = request.get("newPassword");
+
+            if (email == null || newPassword == null) {
+                return ResponseEntity.badRequest().body("Email and new password are required");
+            }
+
+            if (newPassword.length() < 8) {
+                return ResponseEntity.badRequest().body("Password must be at least 8 characters");
+            }
+
+            userService.resetPassword(email, newPassword);
+            return ResponseEntity.ok("Password reset successfully");
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

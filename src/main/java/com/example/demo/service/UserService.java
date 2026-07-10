@@ -67,4 +67,16 @@ public class UserService {
 
         return user;
     }
+
+    public void resetPassword(String email, String newPassword) {
+        // Find user by email
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("No account found with this email"));
+
+        // Hash the new password before saving
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        System.out.println("Password reset for: " + email);
+    }
 }
